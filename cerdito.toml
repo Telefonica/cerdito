@@ -1,0 +1,55 @@
+# Atlas configuration
+#
+# You can configure here the public key and the private key to access atlas,
+# otherwise the system will use the environment variables
+# MONGODB_ATLAS_PUBLIC_KEY and MONGODB_ATLAS_PRIVATE_KEY
+#
+# [atlas]
+# public_key = "your_public_key"
+# private_key = "your_private_key"
+#
+# Next configure the Atlas clusters you want to stop and start, you can set
+# as many as you want. You need the cluster name and the group id.
+# To obtain the group id you can simply enter the Atlas web site in the
+# cluster you are interested in and in the URL itself you will see the id.
+#
+# [[atlas.clusters]]
+# name = "name-of-cluster"
+# group_id = "hexadecimal group id"
+# [[atlas.clusters]]
+# name = "other-cluster"
+# group_id = "other-cluster group id"
+
+[atlas]
+public_key = "somepublickey"
+private_key = "someprivatekey"
+
+[[atlas.clusters]]
+name = "sample"
+group_id = "1a2b3c4d5e6f7a8b9c0dcafe"
+
+# Kubernetes configuration
+#
+# You can configure here the kubeconfig location, otherwise the system will
+# use the passed config or the environment variable KUBECONFIG (by default
+# ~/.kube/config is used)
+#
+# [kubernetes]
+# kubeconfig = "/config/location/.kubeconfig"
+#
+# Next, you configure the Kubernetes projects you want to stop. You must
+# specify the namespace and deployments that you want to scale to zero.
+#
+# [[kubernetes.projects]]
+# namespace = "dev"
+# deployments = ["alice", "bob"]
+# [[kubernetes.projects]]
+# namespace = "pre"
+# deployments = ["alice", "bob"]
+
+[kubernetes]
+kubeconfig = "./kubeconfig"
+
+[[kubernetes.projects]]
+namespace = "sample-namespace"
+deployments = [ "deploy-alice", "deploy-bob" ]

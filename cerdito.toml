@@ -19,6 +19,9 @@
 # [[atlas.clusters]]
 # name = "other-cluster"
 # group_id = "other-cluster group id"
+#
+# You can completely skip this configuration if you do not want to use this
+# functionality.
 
 [atlas]
 public_key = "somepublickey"
@@ -46,6 +49,9 @@ group_id = "1a2b3c4d5e6f7a8b9c0dcafe"
 # [[kubernetes.projects]]
 # namespace = "pre"
 # deployments = ["alice", "bob"]
+#
+# You can completely skip this configuration if you do not want to use this
+# functionality.
 
 [kubernetes]
 kubeconfig = "./kubeconfig"

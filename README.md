@@ -12,7 +12,9 @@ Save a few cents on your cloud infrastructure.
 
 _cerdito_ is configured through a _toml_ file in which you can indicate the
 Atlas clusters you want to pause and the Kubernetes deployments you want to
-be scaled to zero.
+be scaled to zero. Note that each module goes separately so it is possible
+to use _cerdito_ only to pause Atlas clusters or only to scale deployments
+to zero.
 
 To connect to Atlas you will need a public key and a private API access key
 and for Kubernetes you will need the _cubeconfig_ file.

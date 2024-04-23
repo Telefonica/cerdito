@@ -1,6 +1,6 @@
 # Atlas configuration
 #
-# You can configure here the public key and the private key to access atlas,
+# You can configure here the public key and the private key to access Atlas,
 # otherwise the system will use the environment variables
 # MONGODB_ATLAS_PUBLIC_KEY and MONGODB_ATLAS_PRIVATE_KEY
 #
@@ -15,10 +15,10 @@
 #
 # [[atlas.clusters]]
 # name = "name-of-cluster"
-# group_id = "hexadecimal group id"
+# group_id = "hexadecimal-group-id"
 # [[atlas.clusters]]
 # name = "other-cluster"
-# group_id = "other-cluster group id"
+# group_id = "other-cluster-group-id"
 #
 # You can completely skip this configuration if you do not want to use this
 # functionality.
@@ -30,6 +30,41 @@ private_key = "someprivatekey"
 [[atlas.clusters]]
 name = "sample"
 group_id = "1a2b3c4d5e6f7a8b9c0dcafe"
+
+# Azure configuration
+#
+# You can configure here the Azure tenant ID, Azure client ID and Azure
+# client secret to access Azure, otherwise the system will use the
+# environment variables AZURE_TENANT_ID, AZURE_CLIENT_ID, and
+# AZURE_CLIENT_SECRET
+#
+# [azure]
+# tenant_id = "your_tenant_id"
+# client_id = "your_client_id"
+# client_secret = "your_client_id"
+#
+# Next configure the AKS you want to stop and start, you can set as many as
+# you want. You need the subscription id, resource group name and resource
+# name of your AKS.
+#
+# [[azure.aks]]
+# subscription_id = "subscription-uuid"
+# resource_group_name = "alice-resource-group-name"
+# resource_name = "alice"
+# [[azure.aks]]
+# subscription_id = "subscription-uuid"
+# resource_group_name = "bob-resource-group-name"
+# resource_name = "bob"
+
+[azure]
+tenant_id = "sometenantid"
+client_id = "someclientid"
+client_secret = "someclientsecret"
+
+[[azure.aks]]
+subscription_id = "somesubscriptionid"
+resource_group_name = "resourcegroup"
+resource_name = "aksname"
 
 # Kubernetes configuration
 #

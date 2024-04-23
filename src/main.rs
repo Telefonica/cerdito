@@ -10,11 +10,12 @@ use log::{info, LevelFilter};
 use std::env;
 
 mod atlas;
+mod azure;
 mod config;
 mod kubernetes;
 mod models;
 
-use crate::models::{Atlas, Config, Kubernetes};
+use crate::models::{Atlas, Azure, Config, Kubernetes};
 
 const APP_NAME: &str = env!("CARGO_PKG_NAME");
 const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -73,6 +74,14 @@ async fn main() {
     // Configure Atlas client
     let atlas_client = Atlas::new(atlas_public_key, atlas_private_key, config.atlas.clusters);
 
+    // Get Azure credentials from config file or environment
+    let azure_tenant_id = env::var("AZURE_TENANT_ID").ok().or(config.azure.tenant_id);
+    let azure_client_id = env::var("AZURE_CLIENT_ID").ok().or(config.azure.client_id);
+    let azure_client_secret = env::var("AZURE_CLIENT_SECRET").ok().or(config.azure.client_secret);
+
+    // Configure Azure client
+    let azure_client = Azure::new(azure_tenant_id, azure_client_id, azure_client_secret, config.azure.aks);
+
     // Get Kubernetes config file location from params, environment or config
     let kubeconfig = matches.get_one::<String>("kubeconfig").cloned().or(env::var("KUBECONFIG").ok().or(config.kubernetes.kubeconfig));
 
@@ -83,10 +92,12 @@ async fn main() {
         Some(("version", _)) => println!("{} {}", APP_NAME, APP_VERSION),
         Some(("start", _)) => {
             atlas_client.pause(false).await;
+            azure_client.pause(false).await;
             kubernetes_client.pause(false).await;
         },
         Some(("stop", _)) => {
             kubernetes_client.pause(true).await;
+            azure_client.pause(true).await;
             atlas_client.pause(true).await;
         },
         _ => unreachable!()

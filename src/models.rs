@@ -21,6 +21,23 @@ pub struct Atlas {
     pub clusters: Option<Vec<AtlasCluster>>
 }
 
+// AKS definition
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AKS {
+    pub subscription_id: String,
+    pub resource_group_name: String,
+    pub resource_name: String
+}
+
+// Azure definition
+#[derive(Deserialize, Serialize)]
+pub struct Azure {
+    pub tenant_id: Option<String>,
+    pub client_id: Option<String>,
+    pub client_secret: Option<String>,
+    pub aks: Option<Vec<AKS>>
+}
+
 // Kubernetes project definition
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct KubernetesProject {
@@ -39,5 +56,6 @@ pub struct Kubernetes {
 #[derive(Deserialize, Serialize)]
 pub struct Config {
     pub atlas: Atlas,
+    pub azure: Azure,
     pub kubernetes: Kubernetes
 }

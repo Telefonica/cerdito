@@ -11,13 +11,14 @@ Save a few cents on your cloud infrastructure.
 ## What does _cerdito_ do?
 
 _cerdito_ is configured through a _toml_ file in which you can indicate the
-Atlas clusters you want to pause and the Kubernetes deployments you want to
-be scaled to zero. Note that each module goes separately so it is possible
-to use _cerdito_ only to pause Atlas clusters or only to scale deployments
-to zero.
+Atlas clusters or AKS you want to pause and the Kubernetes deployments you
+want to be scaled to zero. Note that each module goes separately so it is
+possible to use _cerdito_ only to pause Atlas clusters, AKS or to scale
+deployments to zero.
 
-To connect to Atlas you will need a public key and a private API access key
-and for Kubernetes you will need the _cubeconfig_ file.
+To connect to Atlas you will need a public key and a private API access key,
+for AKS you will need a Service Principal and for Kubernetes you will need
+the _cubeconfig_ file.
 
 ## Installation
 
@@ -109,8 +110,8 @@ Options:
 ```
 
 By default _cerdito_ does not show anything when it is running, if you want
-to see what it is doing you can launch it with `RUST_LOG=info` environment
-variable or with `-v` option.
+to see what it is doing you can launch it with `CERDITO_LOGLEVEL=info`
+environment variable or with `-v` option.
 
 _cerdito_ supports the following environment variables.
 
@@ -120,4 +121,7 @@ _cerdito_ supports the following environment variables.
 | `CERDITO_LOGLEVEL` | Log level, effective values are `error`, `warn`, `info`, `debug` and `trace` |
 | `MONGODB_ATLAS_PUBLIC_KEY` | Atlas public key, to avoid having to write it in the configuration file |
 | `MONGODB_ATLAS_PRIVATE_KEY` | Atlas private key |
+| `AZURE_TENANT_ID` | Azure tenant ID |
+| `AZURE_CLIENT_ID` | Azure SP client ID |
+| `AZURE_CLIENT_SECRET` | Azure SP client secret |
 | `KUBECONFIG` | Location of kubeconfig file, by default `~/.kube/config` is used (if not specified in the configuration file) |

@@ -13,6 +13,12 @@ use crate::models::{Atlas, AtlasCluster};
 const ATLAS_URL: &str = "https://cloud.mongodb.com";
 const ATLAS_API_VERSION: &str = "v2";
 
+const USER_AGENT: &str = concat!(
+    env!("CARGO_PKG_NAME"),
+    "/",
+    env!("CARGO_PKG_VERSION")
+);
+
 #[derive(Serialize)]
 struct Pause {
     paused: bool
@@ -57,7 +63,7 @@ impl Atlas {
             let mut error = false;
             debug!("Trying to {} all configured clusters", action);
             // Create a http client
-            let client = reqwest::Client::builder().connection_verbose(true).build().expect("Client::new()");
+            let client = reqwest::Client::builder().connection_verbose(true).user_agent(USER_AGENT).build().expect("Client::new()");
             // Get values from self (safe to unwrap since has already been checked)
             let public_key = self.public_key.unwrap();
             let private_key = self.private_key.unwrap();

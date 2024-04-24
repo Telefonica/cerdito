@@ -8,9 +8,7 @@ use k8s_openapi::api::apps::v1::Deployment;
 use kube::{api::{Api, Patch, PatchParams}, config::{Kubeconfig, KubeConfigOptions}, Client, Config};
 use log::{debug, error, info};
 
-use crate::models::{Kubernetes, KubernetesProject};
-
-const APP_NAME: &str = env!("CARGO_PKG_NAME");
+use crate::{models::{Kubernetes, KubernetesProject}, APP_NAME};
 
 impl Kubernetes {
     pub fn new(kubeconfig: Option<String>, projects: Option<Vec<KubernetesProject>>) -> Kubernetes {

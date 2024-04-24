@@ -29,13 +29,21 @@ pub struct AKS {
     pub resource_name: String
 }
 
+// Databricks definition
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Databricks {
+    pub url: String,
+    pub jobs: Vec<String>
+}
+
 // Azure definition
 #[derive(Deserialize, Serialize)]
 pub struct Azure {
     pub tenant_id: Option<String>,
     pub client_id: Option<String>,
     pub client_secret: Option<String>,
-    pub aks: Option<Vec<AKS>>
+    pub aks: Option<Vec<AKS>>,
+    pub databricks: Option<Vec<Databricks>>
 }
 
 // Kubernetes project definition

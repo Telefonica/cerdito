@@ -55,6 +55,20 @@ group_id = "1a2b3c4d5e6f7a8b9c0dcafe"
 # subscription_id = "subscription-uuid"
 # resource_group_name = "bob-resource-group-name"
 # resource_name = "bob"
+#
+# If you are using Databricks you can configure the URL and the jobs (by
+# name) that you want to pause scheduling. This is independent of AKS, you
+# can have configuration for AKS only, Databricks only or both.
+#
+# [[azure.databricks]]
+# url = "https://example.azuredatabricks.net"
+# jobs = ["alice", "bob"]
+# [[azure.databricks]]
+# url = "https://other.azuredatabricks.net"
+# jobs = ["other-alice", "other-bob"]
+#
+# You can completely skip this configuration if you do not want to use this
+# functionality.
 
 [azure]
 tenant_id = "sometenantid"
@@ -65,6 +79,10 @@ client_secret = "someclientsecret"
 subscription_id = "somesubscriptionid"
 resource_group_name = "resourcegroup"
 resource_name = "aksname"
+
+[[azure.databricks]]
+url = "https://sample.azuredatabricks.net"
+jobs = ["sample-alice", "sample-bob"]
 
 # Kubernetes configuration
 #

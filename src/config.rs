@@ -7,9 +7,7 @@
 use figment::{Figment, providers::{Env, Format, Serialized, Toml}};
 use log::debug;
 
-use crate::models::{Atlas, Azure, Config, Kubernetes};
-
-const APP_NAME: &str = env!("CARGO_PKG_NAME");
+use crate::{models::{Atlas, Azure, Config, Kubernetes}, APP_NAME};
 
 impl Default for Config {
     fn default() -> Self {
@@ -23,7 +21,8 @@ impl Default for Config {
             tenant_id: None,
             client_id: None,
             client_secret: None,
-            aks: None
+            aks: None,
+            databricks: None
         };
         let kubernetes = Kubernetes {
             kubeconfig: None,

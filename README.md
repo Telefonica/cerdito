@@ -11,14 +11,14 @@ Save a few cents on your cloud infrastructure.
 ## What does _cerdito_ do?
 
 _cerdito_ is configured through a _toml_ file in which you can indicate the
-Atlas clusters or AKS you want to pause and the Kubernetes deployments you
-want to be scaled to zero. Note that each module goes separately so it is
-possible to use _cerdito_ only to pause Atlas clusters, AKS or to scale
-deployments to zero.
+Atlas clusters, AKS or Azure Databricks jobs you want to pause and the
+Kubernetes deployments you want to be scaled to zero. Note that each module
+goes separately so it is possible to use _cerdito_ only to pause Atlas
+clusters, AKS, Azure Databricks or to scale deployments to zero.
 
 To connect to Atlas you will need a public key and a private API access key,
-for AKS you will need a Service Principal and for Kubernetes you will need
-the _cubeconfig_ file.
+for AKS or Azure Databricks you will need a Service Principal and for
+Kubernetes you will need _cubeconfig_ file.
 
 ## Installation
 

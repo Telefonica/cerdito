@@ -80,7 +80,7 @@ async fn main() {
     let azure_client_secret = env::var("AZURE_CLIENT_SECRET").ok().or(config.azure.client_secret);
 
     // Configure Azure client
-    let azure_client = Azure::new(azure_tenant_id, azure_client_id, azure_client_secret, config.azure.aks);
+    let azure_client = Azure::new(azure_tenant_id, azure_client_id, azure_client_secret, config.azure.aks, config.azure.databricks);
 
     // Get Kubernetes config file location from params, environment or config
     let kubeconfig = matches.get_one::<String>("kubeconfig").cloned().or(env::var("KUBECONFIG").ok().or(config.kubernetes.kubeconfig));

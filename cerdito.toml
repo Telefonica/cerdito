@@ -57,15 +57,17 @@ group_id = "1a2b3c4d5e6f7a8b9c0dcafe"
 # resource_name = "bob"
 #
 # If you are using Databricks you can configure the URL and the jobs (by
-# name) that you want to pause scheduling. This is independent of AKS, you
-# can have configuration for AKS only, Databricks only or both.
+# name) that you want to pause scheduling. If you set the value of all_jobs
+# to true you do not need to specify jobs and all scheduled jobs will be
+# paused or unpaused. This is independent of AKS, you can have configuration
+# for AKS only, Databricks only or both.
 #
 # [[azure.databricks]]
 # url = "https://example.azuredatabricks.net"
 # jobs = ["alice", "bob"]
 # [[azure.databricks]]
 # url = "https://other.azuredatabricks.net"
-# jobs = ["other-alice", "other-bob"]
+# all_jobs = true
 #
 # You can completely skip this configuration if you do not want to use this
 # functionality.

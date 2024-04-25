@@ -237,42 +237,51 @@ impl Azure {
                                         // Make list of configured jobs mutable to remove items
                                         let mut databricks_jobs = databricks.jobs.clone();
                                         for job in jobs.jobs {
-                                            if databricks_jobs.contains(&job.settings.name) {
+                                            // Determine if job must be paused / unpaused
+                                            let perform_action = if databricks.all_jobs && job.settings.schedule.is_some() {
+                                                true
+                                            } else if databricks_jobs.contains(&job.settings.name) {
                                                 // Remove job from list
                                                 databricks_jobs.retain(|j| *j != job.settings.name);
                                                 if job.settings.schedule.is_none() {
                                                     warn!("It is not possible to {} job {} in {} because it is not scheduled in Databricks", &action, &job.settings.name, &databricks.url);
+                                                    false
                                                 } else {
-                                                    // Get schedule and change pause status
-                                                    let mut schedule = job.settings.schedule.unwrap();
-                                                    schedule.pause_status = pause_status.to_string();
-                                                    // Build URL (Safe unwrap since is checked before and path is valid)
-                                                    let url = reqwest::Url::parse(&databricks.url).map(|u| u.join("/api/2.1/jobs/update").unwrap()).unwrap();
-                                                    // Request change
-                                                    let json = DatabricksJobUpdateRequest {
-                                                        job_id: job.job_id,
-                                                        new_settings: DatabricksJobUpdate {
-                                                            schedule: schedule
-                                                        }
-                                                    };
-                                                    let response = client.post(url)
-                                                        .header("Authorization", format!("Bearer {}", token))
-                                                        .json(&json)
-                                                        .send()
-                                                        .await;
-                                                    match response {
-                                                        Ok(response) => {
-                                                            if response.status().is_success() {
-                                                                 info!("Job {} in {} {}", &job.settings.name, &databricks.url, &post_action);
-                                                            } else {
-                                                                error!("Bad response status code {} when trying to {} job {} in {}", response.status(), &action, &job.settings.name, &databricks.url);
-                                                                error = true;
-                                                            }
-                                                        },
-                                                        Err(err) => {
-                                                            error!("Unexpected response when trying to {} job {} in {}, {}", &action, &job.settings.name, &databricks.url, &err);
+                                                    true
+                                                }
+                                            } else {
+                                                false
+                                            };
+                                            if perform_action {
+                                                // Get schedule (Safe unwrap since is checked before) and change pause status
+                                                let mut schedule = job.settings.schedule.unwrap();
+                                                schedule.pause_status = pause_status.to_string();
+                                                // Build URL (Safe unwrap since is checked before and path is valid)
+                                                let url = reqwest::Url::parse(&databricks.url).map(|u| u.join("/api/2.1/jobs/update").unwrap()).unwrap();
+                                                // Request change
+                                                let json = DatabricksJobUpdateRequest {
+                                                    job_id: job.job_id,
+                                                    new_settings: DatabricksJobUpdate {
+                                                        schedule: schedule
+                                                    }
+                                                };
+                                                let response = client.post(url)
+                                                    .header("Authorization", format!("Bearer {}", token))
+                                                    .json(&json)
+                                                    .send()
+                                                    .await;
+                                                match response {
+                                                    Ok(response) => {
+                                                        if response.status().is_success() {
+                                                             info!("Job {} in {} {}", &job.settings.name, &databricks.url, &post_action);
+                                                        } else {
+                                                            error!("Bad response status code {} when trying to {} job {} in {}", response.status(), &action, &job.settings.name, &databricks.url);
                                                             error = true;
                                                         }
+                                                    },
+                                                    Err(err) => {
+                                                        error!("Unexpected response when trying to {} job {} in {}, {}", &action, &job.settings.name, &databricks.url, &err);
+                                                        error = true;
                                                     }
                                                 }
                                             }

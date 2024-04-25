@@ -33,6 +33,9 @@ pub struct AKS {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Databricks {
     pub url: String,
+    #[serde(default = "default_all_jobs")]
+    pub all_jobs: bool,
+    #[serde(default = "default_jobs")]
     pub jobs: Vec<String>
 }
 
@@ -67,3 +70,6 @@ pub struct Config {
     pub azure: Azure,
     pub kubernetes: Kubernetes
 }
+
+fn default_all_jobs() -> bool { false }
+fn default_jobs() -> Vec<String> { std::vec::Vec::new() }

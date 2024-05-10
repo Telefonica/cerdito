@@ -36,7 +36,8 @@ pub struct Databricks {
     #[serde(default = "default_all_jobs")]
     pub all_jobs: bool,
     #[serde(default = "default_jobs")]
-    pub jobs: Vec<String>
+    pub jobs: Vec<String>,
+    pub delete: Option<Vec<String>>
 }
 
 // Azure definition

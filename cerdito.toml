@@ -60,11 +60,14 @@ group_id = "1a2b3c4d5e6f7a8b9c0dcafe"
 # name) that you want to pause scheduling. If you set the value of all_jobs
 # to true you do not need to specify jobs and all scheduled jobs will be
 # paused or unpaused. This is independent of AKS, you can have configuration
-# for AKS only, Databricks only or both.
+# for AKS only, Databricks only or both. Optionally you can indicate with
+# delete a list of files or directories that you want to delete from
+# Databricks file system (in stop action).
 #
 # [[azure.databricks]]
 # url = "https://example.azuredatabricks.net"
 # jobs = ["alice", "bob"]
+# delete = ["/charlie"]
 # [[azure.databricks]]
 # url = "https://other.azuredatabricks.net"
 # all_jobs = true
@@ -85,6 +88,7 @@ resource_name = "aksname"
 [[azure.databricks]]
 url = "https://sample.azuredatabricks.net"
 jobs = ["sample-alice", "sample-bob"]
+delete = ["/some"]
 
 # Kubernetes configuration
 #

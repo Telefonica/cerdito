@@ -59,6 +59,12 @@ struct DatabricksJobUpdateRequest {
     new_settings: DatabricksJobUpdate
 }
 
+#[derive(Serialize)]
+struct DatabricksDbfsDeleteRequest {
+    path: String,
+    recursive: bool
+}
+
 impl Azure {
     pub fn new(tenant_id: Option<String>, client_id: Option<String>, client_secret: Option<String>, aks: Option<Vec<AKS>>, databricks: Option<Vec<Databricks>>) -> Azure {
         debug!("Azure tenant ID: {:?}", tenant_id);
@@ -300,6 +306,45 @@ impl Azure {
                             Err(err) => {
                                 error!("Unexpected error when trying to parse Databricks URL, {}", &err);
                                 error = true;
+                            }
+                        }
+                        // On stop seek for delete config and try to delete
+                        if order && databricks.delete.is_some() {
+                            let mut delete_error = false;
+                            let delete_list = databricks.delete.as_ref().unwrap();
+                            info!("Deleting Databricks files/directories {:?} in {}", delete_list, &databricks.url);
+                            // Build URL (Calling unwrap is safe in join because path is valid and url was checked before)
+                            let url = reqwest::Url::parse(&databricks.url).map(|u| u.join("/api/2.0/dbfs/delete").unwrap()).unwrap();
+                            for delete in delete_list {
+                                // Request delete
+                                let json = DatabricksDbfsDeleteRequest {
+                                    path: delete.into(),
+                                    recursive: true
+                                };
+                                let response = client.post(url.as_str())
+                                    .header("Authorization", format!("Bearer {}", token))
+                                    .json(&json)
+                                    .send()
+                                    .await;
+                                match response {
+                                    Ok(response) => {
+                                        if response.status().is_success() {
+                                            info!("File/directory {} in {} deleted", delete, &databricks.url);
+                                        } else {
+                                            error!("Bad response status code {} when trying to delete file/directory {} in {}", response.status(), delete, &databricks.url);
+                                            delete_error = true;
+                                        }
+                                    },
+                                    Err(err) => {
+                                        error!("Unexpected response when trying to delete file/directory {} in {}, {}", delete, &databricks.url, &err);
+                                        delete_error = true;
+                                    }
+                                }
+                            }
+                            if delete_error {
+                                debug!("Some (or all) Databricks files/directories have failed to delete")
+                            } else {
+                                debug!("All Databricks files/directories have been deleted")
                             }
                         }
                     }

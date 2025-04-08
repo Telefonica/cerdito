@@ -1,0 +1,47 @@
+name: Build static
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build cerdito static binary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: |
+          docker run --rm -v $(pwd):/app -w /app rust:alpine sh -c "
+            apk add -U --no-progress --no-cache git musl-dev openssl-dev openssl-libs-static
+            cargo build --release --locked
+          "
+      - name: Package current compilation
+        id: package-current
+        run: |
+          install -Dm755 "target/release/cerdito" "cerdito-static-${GITHUB_REF##*/}-${GITHUB_SHA}/cerdito"
+          install -Dm644 "README.md" "cerdito-static-${GITHUB_REF##*/}-${GITHUB_SHA}/README.md"
+          install -Dm644 "LICENSE" "cerdito-static-${GITHUB_REF##*/}-${GITHUB_SHA}/LICENSE"
+          install -Dm644 "cerdito.toml" "cerdito-static-${GITHUB_REF##*/}-${GITHUB_SHA}/cerdito.toml"
+          echo "version=${GITHUB_REF##*/}-${GITHUB_SHA}" >> $GITHUB_OUTPUT
+      - name: Archive current compilation
+        uses: actions/upload-artifact@v4
+        with:
+          name: "cerdito-static-${{ steps.package-current.outputs.version }}"
+          path: "cerdito-static-${{ steps.package-current.outputs.version }}/"
+      - name: Package tagged compilation
+        id: package
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+        run: |
+          install -Dm755 "target/release/cerdito" "cerdito-static-${GITHUB_REF##*/}/cerdito"
+          install -Dm644 "README.md" "cerdito-static-${GITHUB_REF##*/}/README.md"
+          install -Dm644 "LICENSE" "cerdito-static-${GITHUB_REF##*/}/LICENSE"
+          install -Dm644 "cerdito.toml" "cerdito-static-${GITHUB_REF##*/}/cerdito.toml"
+          tar cvJf "cerdito-static-${GITHUB_REF##*/}.tar.xz" "cerdito-static-${GITHUB_REF##*/}"
+          echo "version=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+        with:
+          files: "cerdito-static-${{ steps.package.outputs.version }}.tar.xz"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
